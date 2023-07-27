@@ -66,6 +66,7 @@ class LinearRegressionModel(nn.Module): # Inherits from nn.Module (Almost everyt
     # Forward method to define the computation performed at every call in the model. NEEDS TO BE DEFINED IF YOU'RE USING A Subclass "nn.Module"
     def forward(self, x: torch.Tensor) -> torch.Tensor: # x: torch.Tensor basically means x inherits as torch.Tensor by returning it. "x" is the input data.
         return self.weights * x + self.bias # The linear regression formula. You could also replace the entire line with "return self.Linear_layer(x)".
+    # It should be noted that weight and bias are learnable parameters. In this model, we can decide what we want our weight and bias to be as described on line 12.
 
 
 def plottingChart(mainData = TrainingData,
@@ -75,7 +76,7 @@ def plottingChart(mainData = TrainingData,
                   predictions=None):
 
     # Plots the training data and the test data and then compares the predictions.
-    plt.figure(figsize=(10,7))
+    plt.figure(figsize=(10,7)) # Dimensions of the graph.
 
     # Training data will be in blue.
     plt.scatter(mainData, mainLabels, c="b", s=4, label = "Training Data")
@@ -124,7 +125,7 @@ loss_fn = nn.L1Loss()
 # Setup an optimizer. Two parameters.
 optimizer = torch.optim.SGD(params=houseModel.parameters(), # Model parameters you'd like to optimize.
                             lr=0.005 # The learning rate is how much it changes the parameter of a tensor value. e.g. if lr is set to 0.01, and the dataset is some random float 3.036, it'll change to 3.04.
-                            # Shrinking the learning rate allows it to converge more slowly, yet prevents overfitting the original data.
+                            # Shrinking the learning rate allows it to converge slower, yet prevents overfitting the original data.
                             )
 
 # Building a training loop (and testing loop) in PyTorch.
@@ -205,7 +206,7 @@ for epoch in range(epochs): # Pass the data through the model for a number of ep
         epochCount.append(epoch) # Add the current count.
         trainingLossVals.append(loss.detach().numpy())
         testingLossVals.append(testingLoss.detach().numpy())
-        print(f"Epoch: {epoch} | MAE Train Loss: {loss} | MAE Test Loss: {testingLoss} ")
+        print(f"Epoch: {epoch} | MAE Train Loss: {loss} | MAE Test Loss: {testingLoss} ") # MAE = Mean Absolute Error.
 
 houseModel.state_dict()
 
@@ -223,6 +224,8 @@ print(f"Printing the graph: \n")
 # Put the data on the CPU and plot it.
 plottingChart(predictions=housePredictions.cpu())
 
+plt.show()
+
 ## Saving our PyTorch model
 modelPath = Path("models")
 
@@ -237,3 +240,7 @@ print(f"The model has decided these stats are the most applicable: \n {houseMode
 
 print(f"The model will be saved at: {modelSavePath}")
 torch.save(obj=houseModel.state_dict(), f=modelSavePath) # state_dict contains all the models trained/associated parameters and what state they're in.
+
+print(f"Press enter to finish.\n")
+
+input()
