@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33712.159
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PyTorch", "PyTorch\PyTorch.pyproj", "{AE6521D9-288F-4175-84F0-E1858C5A9A70}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{9E12E3E5-D63C-42C3-9AAC-3D199EE3514F}"
+	ProjectSection(SolutionItems) = preProject
+		PyTorch\HouseData.csv = PyTorch\HouseData.csv
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Any GPU = Debug|Any GPU
+		Release|Any CPU = Release|Any CPU
+		Release|Any GPU = Release|Any GPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AE6521D9-288F-4175-84F0-E1858C5A9A70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE6521D9-288F-4175-84F0-E1858C5A9A70}.Debug|Any GPU.ActiveCfg = Debug|Any CPU
+		{AE6521D9-288F-4175-84F0-E1858C5A9A70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE6521D9-288F-4175-84F0-E1858C5A9A70}.Release|Any GPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8AB160A0-E640-40C4-B8F7-C18D1CB2A3C6}
+	EndGlobalSection
+EndGlobal
