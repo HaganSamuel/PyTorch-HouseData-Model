@@ -5,9 +5,13 @@ from pathlib import Path
 
 from os import path
 import pandas as pd
+
 import matplotlib.pyplot as plt
 
 print(torch.version.__version__)
+
+import graphPlotting as gP
+#from graphPlotting import plottingChart as pt
 
 # Creating the known parameters (The ones we're trying to reach from our linear regression AI model)
 # https://youtu.be/V_xro1bcAuA?t=18285
@@ -28,7 +32,7 @@ What our model does:
 '''
 
 # Create train/test data split.
-dataFile = pd.read_csv('HouseData.csv')
+dataFile = pd.read_csv('LinearRegressionHouseDatabase.csv')
 
 houseTest = torch.tensor(dataFile.to_numpy(), dtype=torch.float64)
 LinearDataVariant = weight * houseTest + bias # This is the ideal output, but we won't always have access to this in the "wild" so to speak when creating the model.
@@ -42,7 +46,7 @@ splitTrainingData = int(0.8*len(houseTest))
 TrainingData, IdealTrainingData = houseTest[:splitTrainingData], LinearDataVariant[:splitTrainingData] # Colin ":" positioning determines the first or last of the values based on the number value fo splitTrainingData.
 TestingData, IdealTestingData = houseTest[splitTrainingData:], LinearDataVariant[splitTrainingData:] # These datasets are used to test and learn upon the training data.
 
-print(f"The current sizes of each dataset: \n TrainingData size: {TrainingData.size()} \n IdealTrainingData size: {IdealTrainingData.size()} \n TestingData size: {TestingData.size()} \n IdealTestingData size: {IdealTestingData.size()}")
+print(f"The current sizes of each dataset: \n TrainingData{TrainingData.type()} size: {TrainingData.size()} \n IdealTrainingData{IdealTrainingData.type()} size: {IdealTrainingData.size()} \n TestingData{TestingData.type()} size: {TestingData.size()} \n IdealTestingData{IdealTestingData.type()} size: {IdealTestingData.size()}")
 
 # Luckily for us, PyTorch has already implemented Gradient Descent and Backpropagation for us.
 
@@ -68,30 +72,7 @@ class LinearRegressionModel(nn.Module): # Inherits from nn.Module (Almost everyt
         return self.weights * x + self.bias # The linear regression formula. You could also replace the entire line with "return self.Linear_layer(x)".
     # It should be noted that weight and bias are learnable parameters. In this model, we can decide what we want our weight and bias to be as described on line 12.
 
-
-def plottingChart(mainData = TrainingData,
-                  mainLabels = IdealTrainingData,
-                  testingDataVal = TestingData,
-                  testingLabels = IdealTestingData,
-                  predictions=None):
-
-    # Plots the training data and the test data and then compares the predictions.
-    plt.figure(figsize=(10,7)) # Dimensions of the graph.
-
-    # Training data will be in blue.
-    plt.scatter(mainData, mainLabels, c="b", s=4, label = "Training Data")
-
-    # Test data will be in green.
-    plt.scatter(testingDataVal, testingLabels, c="g", s=4, label="Testing data")
-
-    # Predictions will be in red.
-    if predictions is not None:
-        plt.scatter(testingDataVal, predictions, c="r", s=4, label="Predictions")
-
-    # Show the legend
-    plt.legend(prop={"size" : 14});
-
-# Create a random seed.
+# Create a random seed for generating random numbers.
 torch.manual_seed(42)
 
 # Create an instance of the model (this is a subclass of nn.Module that contains nn.Parameter(s))
@@ -99,10 +80,6 @@ houseModel = LinearRegressionModel()
 
 # Check out the parameters within the nn.Module subclass we created
 list(houseModel.parameters())
-
-# Making prediction using torch.inference_mode(). Turns off important stuff like gradient tracking which is used for training but not for inference).
-#with torch.inference_mode():
-#    house_preds = model_0(houseTest)
 
 # Train Model
 '''
@@ -124,7 +101,7 @@ loss_fn = nn.L1Loss()
 
 # Setup an optimizer. Two parameters.
 optimizer = torch.optim.SGD(params=houseModel.parameters(), # Model parameters you'd like to optimize.
-                            lr=0.005 # The learning rate is how much it changes the parameter of a tensor value. e.g. if lr is set to 0.01, and the dataset is some random float 3.036, it'll change to 3.04.
+                            lr=0.1 # The learning rate is how much it changes the parameter of a tensor value. e.g. if lr is set to 0.01, and the dataset is some random float 3.036, it'll change to 3.04.
                             # Shrinking the learning rate allows it to converge slower, yet prevents overfitting the original data.
                             )
 
@@ -147,6 +124,7 @@ epochs = 500
 
 # It should also be known that step 4 and 5 are specifically used as methods for training the model.
 
+# Set the model to the GPU, otherwise use the CPU as defined prior.
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 # Put data on the available device.
@@ -155,7 +133,6 @@ IdealTrainingData = IdealTrainingData.to(device)
 TestingData = TestingData.to(device)
 IdealTestingData = IdealTestingData.to(device)
 
-# Set the model to the GPU, otherwise use the CPU as defined prior.
 houseModel.to(device)
 
 print(f"Now using device: {device} \n")
@@ -218,13 +195,16 @@ houseModel.eval()
 with torch.inference_mode():
     housePredictions = houseModel(TestingData)
 
-
 print(f"Printing the graph: \n")
 
 # Put the data on the CPU and plot it.
-plottingChart(predictions=housePredictions.cpu())
+plotChart = gP.pythonPlotting(TrainingData, IdealTrainingData, TestingData, IdealTestingData)
 
-plt.show()
+print(f"The size of housePredictions: {housePredictions.shape} \n")
+
+plotChart.plottingChart(input_predictions=housePredictions.cpu())
+
+#plotChart.plottingChart.plt.show()
 
 ## Saving our PyTorch model
 modelPath = Path("models")
@@ -233,14 +213,10 @@ modelPath = Path("models")
 modelPath.mkdir(parents=True, exist_ok=True) # Second parameter will check if the directory already exists it won't error out if it already exists.
 
 # Create Model Save Path.
-modelName = "01_pytorch_workflow_model_0.pth" # pth = Pytorch extension.
+modelName = "01_pytorch_workflow_model_1.pth" # pth = Pytorch extension.
 modelSavePath = modelPath / modelName
 
 print(f"The model has decided these stats are the most applicable: \n {houseModel.state_dict()}")
 
 print(f"The model will be saved at: {modelSavePath}")
 torch.save(obj=houseModel.state_dict(), f=modelSavePath) # state_dict contains all the models trained/associated parameters and what state they're in.
-
-print(f"Press enter to finish.\n")
-
-input()

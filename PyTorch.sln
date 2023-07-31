@@ -7,7 +7,8 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PyTorch", "PyTorch\PyTorch.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{9E12E3E5-D63C-42C3-9AAC-3D199EE3514F}"
 	ProjectSection(SolutionItems) = preProject
-		PyTorch\HouseData.csv = PyTorch\HouseData.csv
+		PyTorch\LinearRegressionHouseDatabase.csv = PyTorch\LinearRegressionHouseDatabase.csv
+		PyTorch\MultiRegressionData.csv = PyTorch\MultiRegressionData.csv
 	EndProjectSection
 EndProject
 Global

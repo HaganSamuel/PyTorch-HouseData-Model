@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>ae6521d9-288f-4175-84f0-e1858c5a9a70</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>customLinearRegressionModel.py</StartupFile>
+    <StartupFile>multiLinearRegression.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -22,6 +22,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="customLinearRegressionModel.py" />
+    <Compile Include="graphPlotting.py" />
+    <Compile Include="multiLinearRegression.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
